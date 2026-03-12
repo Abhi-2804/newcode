@@ -1,0 +1,38 @@
+.career-path-card {
+  position: relative;
+}
+
+.career-path-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.match-badge {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.upskill-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.upskill-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.upskill-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
