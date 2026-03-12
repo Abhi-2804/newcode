@@ -55,11 +55,10 @@ def get_current_user(
             )
         # Ensure user_id is an integer for database query
         user_id = int(user_id_raw)
-    except (JWTError, ValueError, TypeError) as e:
-        print(f"JWT Decode Error: {e}")
+    except (JWTError, ValueError, TypeError):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Invalid token: {e}"
+            detail="Invalid token"
         )
 
     user = db.query(User).filter(User.id == user_id).first()
