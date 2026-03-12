@@ -9,7 +9,7 @@ class BaseAgent:
 
     def __init__(self, temperature: float = 0.3):
         self.llm = ChatGoogleGenerativeAI(
-            model="gemini-1.5-flash",
+            model="gemini-2.5-flash",
             temperature=temperature,
             google_api_key=settings.GEMINI_API_KEY,
         )
