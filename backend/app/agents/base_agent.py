@@ -1,8 +1,5 @@
-"""
-Base agent class with shared LLM initialization and prompt helpers.
-"""
 import json
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from app.config import settings
 
@@ -10,43 +7,35 @@ from app.config import settings
 class BaseAgent:
     """Base class for all AI agents."""
 
-    def __init__(self, model: str = "gpt-3.5-turbo", temperature: float = 0.3):
-        self.llm = ChatOpenAI(
-            model=model,
+    def __init__(self, temperature: float = 0.3):
+        self.llm = ChatGoogleGenerativeAI(
+            model="gemini-1.5-flash",
             temperature=temperature,
-            api_key=settings.OPENAI_API_KEY,  # type: ignore
+            google_api_key=settings.GEMINI_API_KEY,
         )
 
     def _call_llm(self, system_prompt: str, user_message: str) -> str:
-        """Send a prompt to the LLM and return the raw response text."""
         prompt = ChatPromptTemplate.from_messages([
             ("system", system_prompt),
-            ("human", "{input}"),
+            ("human", "{input}")
         ])
+
         chain = prompt | self.llm
         response = chain.invoke({"input": user_message})
         return str(response.content)
 
     def _parse_json(self, text: str) -> dict:
-        """Best-effort parse of JSON from LLM response."""
         import re
-        
-        # Try to extract JSON content between curly braces
+
         match = re.search(r'(\{.*\})', text, re.DOTALL)
         if match:
             cleaned = match.group(1)
         else:
-            # Fallback to stripping markdown code fences
             cleaned = text.strip()
-            if cleaned.startswith("```"):
-                cleaned = cleaned.split("\n", 1)[-1]
-                cleaned = cleaned.rsplit("```", 1)[0]
-                cleaned = cleaned.strip()
 
         try:
             return json.loads(cleaned)
         except json.JSONDecodeError:
-            # If parsing fails, return a wrapper with the raw text
             return {
                 "error": "Failed to parse AI response as JSON",
                 "raw_response": text
