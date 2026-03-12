@@ -20,6 +20,7 @@ export default function Signup() {
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.detail || 'Signup failed');
+      console.log(err);
     } finally {
       setLoading(false);
     }
@@ -66,7 +67,7 @@ export default function Signup() {
             <input
               className="form-input"
               type="password"
-              placeholder="••••••••"
+              placeholder="min len 6"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
               required
